@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% block title %}
+    Applicants
+{% endblock %}
+{% load static %}
+{% load is_favorited %}
+{% load url_replace %}
+
+{% block styles %}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.10/select2-bootstrap.min.css"
+          rel="stylesheet"/>
+
+    <link rel="stylesheet" href="{% static 'vendor/bootstrap-select/css/bootstrap-select.min.css' %}">
+    <style>
+        .bootstrap-select .dropdown-menu a {
+            color: #000000;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <div class="container">
+    <div class="row">
+    <div class="col-lg-12">
+    <div class="inner-header">
+    <h3>Gérer mes candidatures</h3>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    
+    
+    <div id="content">
+    <div class="container">
+    <div class="row">
+    <div class="col-lg-4 col-md-12 col-xs-12">
+    <div class="right-sideabr">
+    <h4>Gérez votre compte</h4>
+    <ul class="list-item">
+    <li><a href="resume.html">A propos de moi</a></li>
+    <li><a href="notifications.html">Notifications <span class="notinumber">2</span></a></li>
+    <li><a class="active" href="manage-applications.html">Candidatures</a></li>
+    <li><a href="job-alerts.html">Job Alerts</a></li>
+    <li><a href="change-password.html">Changer de mot de passe</a></li>
+    <li><a href="index.html">Déconnection</a></li>
+    </ul>
+    </div>
+    </div>
+
+   
+    <div class="col-lg-8 col-md-12 col-xs-12">
+    <div class="job-alerts-item">
+    <h3 class="alerts-title">Toutes vos candidatures</h3>
+    {% for applicant in applicants %}
+    <div class="applications-content">
+    <div class="row">
+    <div class="col-md-4">
+    <div class="thums">
+    <img src="{{ applicant.job.user.profile.image }}" alt="">
+    </div>
+    <h3>{{ applicant.job.title }}</h3>
+    <span>{{ applicant.job.company_name }}</span>
+    </div>
+    <div class="col-md-3">
+        {% if applicant.job.type == '1' %}
+        <span class="full-time">Full Time</span>
+        {% elif applicant.job.type == '2' %}
+        <span class="full-time">Part Time</span>
+        {% else %}
+        <span class="full-time">Intership</span>
+        {% endif %}
+    </div>
+    <div class="col-md-3">
+    <p>posté depuis {{ applicant.created_at|timesince }}</p>
+    </div>
+    <div class="col-md-2">
+    <p>{{ applicant.get_status }}</p>
+    </div>
+    </div>
+    </div>
+    {% endfor %}
+    <br>
+    
+     <div class="row">
+                <div class="col-md-12">
+                    <nav aria-label="Page navigation example" class="d-flex justify-content-center mt-4 mb-4">
+                        <ul class="pagination">
+                            {% if page_obj.has_previous %}
+                                <li class="page-item">
+                                    <a href="?page={{ page_obj.previous_page_number }}"
+                                       class="page-link">&laquo;</a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled">
+                                    <a class="page-link">&laquo;</a>
+                                </li>
+                            {% endif %}
+                            {% for i in page_obj.paginator.page_range %}
+                                {% if page_obj.number == i %}
+                                    <li class="page-item active">
+                                        <a class="page-link">{{ i }}</a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item">
+                                        <a href="?{% url_replace 'page' i %}" class="page-link">{{ i }}</a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                            {% if page_obj.has_next %}
+                                <li class="page-item">
+                                    <a href="?{% url_replace 'page' page_obj.next_page_number %}"
+                                       class="page-link">&raquo;</a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled">
+                                    <a class="page-link">&raquo;</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+    
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.full.js"></script>
+
+    <script>
+        $('.js-select2').select2({
+            theme: "bootstrap"
+        });
+
+        $('.view-comment').on('click', function () {
+            $('#myModal').modal('show');
+
+            $('.modal-body .comment').html($(this).data('comment'));
+        })
+    </script>
+
+{% endblock %}

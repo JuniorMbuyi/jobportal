@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load is_already_applied %}
+{% load humanize %}
+{% block title %}
+    Job details
+{% endblock %}
+
+{% block content %}
+
+
+
+
+
+    <div class="page-header">
+        <div class="container">
+        <div class="row">
+        <div class="col-lg-8 col-md-6 col-xs-12">
+        <div class="breadcrumb-wrapper">
+        <div class="img-wrapper">
+        <img src="{% static 'img/features/img1.png' %}" alt="">
+        </div>
+        <div class="content">
+        <h3 class="product-title">{{ job.title }}</h3>
+        <p class="brand">{{ job.company_name }}</p>
+        <div class="tags">
+        <span><i class="lni-map-marker"></i> {{ job.location }}</span>
+        <span><i class="lni-calendar"></i> Posted {{ job.created_at|timesince }}  </span>
+        </div>
+        </div>
+        </div>
+        </div>
+        <div class="col-lg-4 col-md-6 col-xs-12">
+        <div class="month-price">
+        <span class="year">Salaire</span>
+        <div class="price">${% if job.salary > 0 %} {{ job.salary | intcomma}}/ Mois {% else %} Negotiable {% endif %}</div>
+        </div>
+        </div>
+        </div>
+        </div>
+        </div>
+        
+        
+        <section class="job-detail section">
+        <div class="container">
+        <div class="row justify-content-between">
+        <div class="col-lg-8 col-md-12 col-xs-12">
+        <div class="content-area">
+        <h4>Déscription du job</h4>
+            <p>{{ job.company_description }}</p>
+        <h5>Compétence demandé pour ce job</h5>
+        <ul>
+            {% for tag in job.tags.all %}
+        <li>{{ tag.name }}</li>
+        {% endfor %}
+        </ul>
+        <h5>Comment postuler</h5>
+        <p>Proin gravida nibh vel velit auctor aliquet. Aenean sollicitudin, lorem quis bibendum auctor, nisi elit consequat ipsum, nec sagittis sem nibh id elit. Duis sed odio sit amet nibh vulputate cursus a sit amet mauris.</p>
+        {% if request.user.is_authenticated %}
+               {% is_already_applied job request.user as is_applied %}
+               {% if is_applied %}
+        <a href="#" class="btn btn-common">Vous avez déjà postulé</a>
+        {% else %}
+        <form action="{% url 'jobs:apply-job' job.id %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="job" value="{{ job.id }}">
+            <input type="submit" class="btn btn-common log-btn mt-5"
+                   value="Postuler a ce job"/>
+        </form>
+    {% endif %}
+{% else %}
+    <form action="{% url 'jobs:apply-job' job.id %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="job" value="{{ job.id }}">
+        <input type="submit" class="btn btn-common log-btn mt-5"
+               value="Postuler a ce job"/>
+    </form>
+{% endif %}
+        </div>
+        </div>
+        <div class="col-lg-4">
+            <h4>A propos de {{ job.company_name }}</h4>
+            <p class="job-detail__company-description">{{ job.company_description }}</p>
+            <p class="job-detail__social social social--outline ">
+                <a href="{{ job.website }}" data-toggle="tooltip" data-placement="top" title="Website"
+                   class="link"> {{ job.website}}
+                    <i class="fa fa-link"></i>
+                </a>
+                <a href="#" data-toggle="tooltip" data-placement="top" title="Twitter" class="twitter">
+                    <i class="fa fa-twitter"></i>
+                </a>
+                <a href="#" data-toggle="tooltip" data-placement="top" title="Facebook" class="facebook">
+                    <i class="fa fa-facebook"></i>
+                </a>
+            </p>
+            <div class="job-detail__apply-top">
+                {% if is_applied %}
+                    <input type="button" class="btn btn-outline-white-primary" value="Voyus avez déjà postulé"/>
+                {% else %}
+                    <form action="{% url 'jobs:apply-job' job.id %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="job" value="{{ job.id }}">
+                        <input type="submit" class="btn btn-common log-btn mt-5" value="Postuler a ce job"/>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+        </div>
+        </div>
+        </section>
+        
+
+{% endblock %}

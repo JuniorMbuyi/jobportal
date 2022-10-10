@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+{% block title %}
+    Applicants
+{% endblock %}
+{% load static %}
+
+{% block content %}
+
+    <div class="page-header">
+        <div class="container">
+        <div class="row">
+        <div class="col-lg-12">
+        <div class="inner-header">
+        <h3>All applicants who applied for your positions</h3>
+        </div>
+        </div>
+        </div>
+        </div>
+        </div>
+        
+        
+    <section>
+        <div class="container mt-5">
+            <form id="job-main-form" method="get" action="" class="job-main-form">
+                <div class="controls">
+                    <div class="row align-items-center">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <select id="status" name="status" class="form-control">
+                                    <option value="" selected>Select status</option>
+                                    <option value="1" {% if request.GET.status == "1" %} selected {% endif %}>Pending</option>
+                                    <option value="2" {% if request.GET.status == "2" %} selected {% endif %}>Accepted</option>
+                                    <option value="3" {% if request.GET.status == "3" %} selected {% endif %}>Rejected</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-common log-btn"><i class="fa fa-magic"></i>
+                                    Filtrer
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="row">
+            
+                {% for applicant in applicants %}
+
+                <div class="col-lg-6 col-md-6 col-xs-12">
+                    <div class="manager-resumes-item">
+                    <div class="manager-content">
+                    <a href="resume.html"><img class="resume-thumb" src="{% static 'img/jobs/avatar-1.png' %}" alt=""></a>
+                    <div class="manager-info">
+                    <div class="manager-name">
+                    <h4><a href="{% url 'jobs:applied-applicant-view' applicant.job.id applicant.id %}">{{ applicant.user.get_full_name }} </a></h4>
+                    <h5>{{ applicant.job.title }}</h5>
+                    </div>
+                    <div class="manager-meta">
+                    <span class="location"><a href="mailto:{{ applicant.user.email }}?Subject=Interested">Contacter le sujet</a></span>
+                    <span class="rate">{% for tag in applicant.user.profile.tags.all %}
+                       {{ tag.name }}
+                    {% endfor %}</span>
+                    </div>
+                    </div>
+                    </div>
+                    <div class="item-body">
+                    <div class="content">
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolore, qui aspernatur accusantium! Molestiae, cum cupiditate nam optio dignissimos magnam velit, perspiciatis amet qui aut nobis, quisquam, laudantium vitae eos ipsam.</p>
+                    </div>
+                    <div class="resume-skills">
+                    <div class="tag-list float-left">
+                    <span>Applied {{ applicant.created_at.astimezone }}</span>
+
+                    </div>
+                    <div class="resume-exp float-right">
+                      
+                    <button class="btn btn-common btn-xs">{{ applicant.get_status }}</button>
+                        
+                    </div>
+                    </div>
+                    </div>
+                    </div>
+                    </div>
+
+                {% endfor %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                {% if is_paginated %}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <nav aria-label="Page navigation example" class="d-flex justify-content-center mt-4 mb-4">
+                                <ul class="pagination">
+                                    {% if page_obj.has_previous %}
+                                        <li class="page-item">
+                                            <a href="?page={{ page_obj.previous_page_number }}"
+                                               class="page-link">&laquo;</a>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item disabled">
+                                            <a class="page-link">&laquo;</a>
+                                        </li>
+                                    {% endif %}
+                                    {% for i in page_obj.paginator.page_range %}
+                                        {% if page_obj.number == i %}
+                                            <li class="page-item active">
+                                                <a class="page-link">{{ i }}</a>
+                                            </li>
+                                        {% else %}
+                                            <li class="page-item">
+                                                <a href="?page={{ i }}" class="page-link">{{ i }}</a>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% if page_obj.has_next %}
+                                        <li class="page-item">
+                                            <a href="?page={{ page_obj.next_page_number }}"
+                                               class="page-link">&raquo;</a>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item disabled">
+                                            <a class="page-link">&raquo;</a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+{% endblock %}

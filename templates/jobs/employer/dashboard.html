@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    Dashboard
+{% endblock %}
+
+{% block content %}
+
+   
+   
+        <div class="page-header">
+            <div class="container">
+            <div class="row">
+            <div class="col-lg-12">
+            <div class="inner-header">
+            <h3>Dashboard</h3>
+            </div>
+            </div>
+            </div>
+            </div>
+            </div>
+            
+            
+        
+
+            <section class="bg-light-gray">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-8 mx-auto mt-5">
+                            <p class="lead text-center">Toutes vos publications</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section>
+
+
+
+
+
+
+
+
+        <div id="content">
+            <div class="container">
+            <div class="row">
+                {% for job in jobs %}
+            <div class="col-lg-12 col-md-6 col-xs-12">
+            <div class="manager-resumes-item">
+            <div class="manager-content">
+            <div class="manager-info">
+            <div class="manager-name">
+            <h4><a href="#">{{ job.title }}</a></h4>
+            <h5>{{ job.company_name }}</h5>
+            </div>
+            <div class="manager-meta">
+            <span class="location"><i class="ti-location-pin"></i> {{ job.location }}</span>
+            <span class="rate"><i class="ti-time"> {% if job.filled %}
+                <span class="badge badge-success">Filled</span>
+            {% else %}
+                <span class="badge badge-secondary">Not Filled</span>
+            {% endif %}</i></span>
+            </div>
+            </div>
+            </div>
+            <div class="item-body">
+            <div class="content">
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolore, qui aspernatur accusantium! Molestiae, cum cupiditate nam optio dignissimos magnam velit, perspiciatis amet qui aut nobis, quisquam, laudantium vitae eos ipsam.</p>
+            </div>
+            <div class="resume-skills">
+            <div class="tag-list float-left">
+            <span>{{ job.created_at }}</span>
+            <span>{{ job.last_date }}</span>
+            <span><a class="dropdown-item" href="{% url 'jobs:employer-jobs-edit' job.id %}">Edit</a></span>
+            <span><a class="dropdown-item" href="{% url 'jobs:employer-dashboard' %}">Delete</a></span>
+            <span>
+            {% if job.filled %}
+              <a class="dropdown-item" href="{% url 'jobs:job-mark-filled' job.id %}">Filled</a>
+                  {% else %}
+                   <a class="dropdown-item" href="{% url 'jobs:job-mark-filled' job.id %}">Mark as filled</a>
+                {% endif %}
+            </span>
+            </div>
+            <div class="resume-exp float-right">
+                <a href="{% url 'jobs:employer-dashboard-applicants' job.id %}"
+                class="btn btn-common btn-xs">
+                 <i class="fa fa-users"></i>{{ job.applicants.count }}
+                 <span class="hidden-xs hidden-sm">Applicants</span>
+             </a>
+            </div>
+            </div>
+            </div>
+            </div>
+            </div>
+            {% endfor %}
+            </div>
+            <div class="pages">
+                <nav aria-label="Page navigation example" class="d-flex justify-content-center mt-4 mb-4">
+                    <ul class="pagination">
+                        <li class="page-item"><a href="#" aria-label="Previous" class="page-link"><span
+                                aria-hidden="true">«</span><span class="sr-only">Previous</span></a></li>
+                        <li class="page-item active"><a href="#" class="page-link">1</a></li>
+                        <li class="page-item"><a href="#" class="page-link">2</a></li>
+                        <li class="page-item"><a href="#" class="page-link">3</a></li>
+                        <li class="page-item"><a href="#" class="page-link">4</a></li>
+                        <li class="page-item"><a href="#" aria-label="Next" class="page-link"><span
+                                aria-hidden="true">»</span><span class="sr-only">Next</span></a></li>
+                    </ul>
+                </nav>
+            </div>
+            </div>
+            </div>
+
+
+    </section>
+
+{% endblock %}
